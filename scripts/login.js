@@ -25,7 +25,7 @@ const loginBtn = document.getElementById("btnLogin").addEventListener('click', (
             icon: "success",
             button: "Go!"
         }).then(function() {
-            window.location.href = "./index.html";
+            window.location.href = "./main.html";
         });
     }).catch((error) => {
         console.log(error);
