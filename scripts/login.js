@@ -4,8 +4,8 @@ const loginBtn = document.getElementById("btnLogin").addEventListener('click', (
     const password = document.getElementById('password').value;
 
     if (email == '') {
-        $("#error-email").text("Enter email").css("border-bottom");
         $("#email").css("border-bottom", "solid red 2px");
+        $("#error-email").text("Enter an email");
         return false;
     }
 
@@ -15,4 +15,27 @@ const loginBtn = document.getElementById("btnLogin").addEventListener('click', (
         return false;
     }
 
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then((userCredentials) => {
+        const user = userCredentials.user;
+        sessionStorage.setItem("uid", userCredentials.user.uid);
+        swal({
+            title: "Logging In",
+            text: "You have Logged in successfully",
+            icon: "success",
+            button: "Go!"
+        }).then(function() {
+            window.location.href = "./index.html";
+        });
+    }).catch((error) => {
+        console.log(error);
+        swal({
+            title: "Sign In",
+            text: error.message,
+            icon: "error",
+            button: "Try Again"
+        }).then(function() {
+            return false;
+        })
+    })    
 });

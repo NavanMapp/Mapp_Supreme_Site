@@ -11,9 +11,13 @@ const registerBtn = document.getElementById("btnSignUp").addEventListener('click
         $("#email").css("border-bottom", "solid red 2px");
         $("#error-email").text("Enter a valid email");
         return false;
-    }else{
-        $("#email").css("border-bottom", "");
     }
+
+    // if (!(/^\w+([\.-]?\w+)*@w+([\.-]?\w+)*(\.w{2,3})+$/.test(email))) {
+    //     $("#email").css("border-bottom", "solid red 2px");
+    //     $("#error-email").text("Invalid email address format");
+    //     return false;
+    // }
 
     if (name.length >= 20 || name.length <= 3) {
         $("#name").css("border-bottom", "solid red 2px");
@@ -34,12 +38,12 @@ const registerBtn = document.getElementById("btnSignUp").addEventListener('click
     }
 
     // searching/fetching credentials in database if user exists before creating it
-    firebase.firestore().collection("users").where("username", "==", email)
+    firebase.firestore().collection("users").where("email", "==", email)
     .get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             if(doc.data().email == email) {
-                $("#name").css("border-bottom", "solid red 2px");
-                $("error-name").text("The username already exists, please choose a different one");
+                $("#email").css("border-bottom", "solid red 2px");
+                $("#error-email").text("The username already exists, please choose a different one");
                 return false;
             }
 
@@ -59,13 +63,19 @@ const registerBtn = document.getElementById("btnSignUp").addEventListener('click
                 password: password,
                 userId: userCredentials.user.uid,
                 created_at: today.getFullYear() + " " + (today.getMonth() + 1) + " " + today.getDate()
-            }).catch(function(error) {
-                console.log('error');
-            })
-            alert('Registered successfully');
-            window.location.href = "login.html";
+            }).catch(function(error){
+                $('#email').css('border-bottom', 'solid red 2px');
+                $('#error-email').text(error.message);
+                return false;
+            });
+            swal({
+                title: "Sign Up",
+                text: "You have been successfully registered",
+                icon: "success",
+                button: "Login"
+            }).then(function(){
+                window.location.href = "login.html";
+            });
         });
     } 
-    
-    console.log('button works');
 });
